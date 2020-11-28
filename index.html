@@ -50,6 +50,21 @@
                 out.innerText = "Not resolvable"
             }
         }
+
+        function parseAutotool() {
+            /** @type {string} */
+            const text = document.getElementById("formula").value
+            const vars = [... new Set(text.split("").filter(c => c >= 'A' && c <= 'z'))].join(" ")
+            const cnf = text.replace(/|| /g, "").replace(/! /g, "-")
+                .split("")
+                .filter(c => vars.includes(c) || c == '-' || c == '\n')
+                .join("")
+                .replace(/ +/g, " ")
+                .split("\n")
+                .map(l => l.trim())
+                .join("\n")
+            document.getElementById("formula").value = vars + "\n" + cnf
+        }
     </script>
 </head>
 <body>
@@ -74,6 +89,7 @@ b
     </code>
     <br/>
     <button onclick="solveText()">Solve</button>
-    <button onclick="solveAutotool()">Solve (Autotool)</button>
+    <button onclick="solveAutotool()">Solve (Autotool output)</button>
+    <button onclick="parseAutotool()">Format from Autotool</button>
 </body>
 </html>
