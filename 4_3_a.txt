@@ -1,0 +1,8 @@
+F H S U Z
+-F U
+F -U
+F S
+-S H
+-U H
+-H Z
+-Z

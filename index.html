@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resolution Solver</title>
+    <script src="./solver.js"></script>
+    <script>
+        function solve() {
+            const out = document.getElementById("out")
+            out.innerText = ""
+            const text = document.getElementById("formula").value
+            const input = text.split("\n")
+            const header = input[0]
+            const clauses = main(text.split("\n"))
+            if (clauses) {
+                const padLength = Math.max(...clauses.map(c => c.clause.length)) + 2
+                for (const c of clauses) {
+                    const { clause, index, resolution } = c
+                    out.innerText += (clause.padEnd(padLength) + index.padStart(4) + (resolution || ""))
+                    out.innerText += "\n"
+                }
+            } else {
+                out.innerText = "Not resolvable"
+            }
+        }
+    </script>
+</head>
+<body>
+    <textarea id="formula" cols="60" rows="20">
+a b c      # list all variables in first line
+a b -c     # place every disjunction on its own line
+-a b
+b
+-b
+    </textarea>
+    <br/>
+    <code>
+        <pre id="out">
+
+        </pre>
+    </code>
+    <br/>
+    <button onclick="solve()">Solve</button>
+</body>
+</html>
