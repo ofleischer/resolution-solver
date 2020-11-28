@@ -7,12 +7,21 @@
     <script src="./solver.js"></script>
     <script>
         function solve() {
-            const out = document.getElementById("out")
-            out.innerText = ""
+            const needle = document.getElementById("needle").value
             const text = document.getElementById("formula").value
             const input = text.split("\n")
             const header = input[0]
-            const clauses = main(text.split("\n"))
+            if (needle) {
+                return main(text.split("\n"), { [needle]: true })
+            } else {
+                return main(text.split("\n"))
+            }
+        }
+
+        function solveText() {
+            const out = document.getElementById("out")
+            out.innerText = ""
+            const clauses = solve()
             if (clauses) {
                 const padLength = Math.max(...clauses.map(c => c.clause.length)) + 2
                 for (const c of clauses) {
@@ -20,6 +29,23 @@
                     out.innerText += (clause.padEnd(padLength) + index.padStart(4) + (resolution || ""))
                     out.innerText += "\n"
                 }
+            } else {
+                out.innerText = "Not resolvable"
+            }
+        }
+
+        function solveAutotool() {
+            const out = document.getElementById("out")
+            out.innerText = ""
+            const clauses = solve()
+            if (clauses) {
+                out.innerText += "[\n"
+                out.innerText += clauses.filter(c => c.resolution).map(c => {
+                    const { resolution } = c
+                    const [ left, right, literal ] = resolution.slice(1, -1).split(",")
+                    return `Resolve { left = ${+left-1}, right = ${+right-1}, literal = ${literal} }`
+                }).join(",\n")
+                out.innerText += "\n]"
             } else {
                 out.innerText = "Not resolvable"
             }
@@ -32,12 +58,13 @@
         Solves <strong>false</strong> from a set of logic expressions in cnf.
         See <a href="https://github.com/herrmanno/resolution-solver">Repo</a> for more information.
     </p>
-    <textarea id="formula" cols="60" rows="20">
-a b c      # list all variables in first line
+    <input id="needle" placeholder="Expression to resolve. Empty means 'resolve false'" style="width: 320px;">
+    <br/>
+    <textarea id="formula" cols="60" rows="20" placeholder="a b c      # list all variables in first line
 a b -c     # place every disjunction on its own line
 -a b
 b
--b
+-b">
     </textarea>
     <br/>
     <code>
@@ -46,6 +73,7 @@ b
         </pre>
     </code>
     <br/>
-    <button onclick="solve()">Solve</button>
+    <button onclick="solveText()">Solve</button>
+    <button onclick="solveAutotool()">Solve (Autotool)</button>
 </body>
 </html>
