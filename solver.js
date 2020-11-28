@@ -145,7 +145,7 @@ function main(inputArray, NEEDLE = {}) {
         const neededClauses = [...neededClausesSet]
         .sort((a,b) => a[TAG] - b[TAG])
         .map((c,i) => {
-            c[TAG] = indexRemap[c[TAG]] = i + 1
+            c[TAG] = indexRemap[c[TAG]] = i
             return c
         })
         .map(c => {
